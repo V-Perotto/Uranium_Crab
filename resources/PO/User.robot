@@ -10,3 +10,6 @@ ${NUMBER_FOLLOWING}     xpath=//a[@href="/uranium_crab/following/"]/span[contain
 ${LINK_USER-F}          xpath=//a[@title="arianyrahini"]
 
 *** Keywords ***
+Visualizar Seguidores
+    Element Should Be Visible   ${H2_USER}
+    Click Element               ${LINK_FOLLOWERS}
