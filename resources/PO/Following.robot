@@ -16,4 +16,7 @@ ${LINK_FOLLOWINGS}          xpath=//ul/li[@class="Y8-fY "][3]
 ${HL_1}                     xpath=//ul[@class="vi798"]/li[@class="Ckrof"][1]/div/div/div/div[@class="tUtVM"]/img
 ${HL_2}                     xpath=//ul[@class="vi798"]/li[@class="Ckrof"][2]/div/div/div/div[@class="tUtVM"]/img
 
+${PUBLICATIONS}             xpath=//a[@class="_9VEo1 T-jvg"]
+${TAGGED}                   xpath=//a[@class="_9VEo1 "]
+
 *** Keywords ***
