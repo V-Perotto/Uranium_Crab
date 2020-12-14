@@ -11,4 +11,4 @@ Test Teardown   Close Page
 *** Test Case ***
 Testgram 01: Sign In Instagram
     Login.Insert Data To Sign In
-    Home.
+    Home.Cancel Automatic Login
