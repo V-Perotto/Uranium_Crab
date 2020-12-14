@@ -1,5 +1,5 @@
 *** Settings ***
-# Resource        ../../sensive/sensive.robot
+Resource        ../../sensive/sensive.robot
 Resource        ../resource.robot
 
 *** Variables ***
@@ -11,7 +11,8 @@ ${BUTTON_SUBMIT}    xpath=//button[@type="submit"]
 
 *** Keywords ***
 Insert Data To Sign In
-    Wait Until Element Is Visible     ${INPUT_USER}
-    Input Text      ${INPUT_USER}     ${USERNAME}
-    Input Text      ${INPUT_PASS}     ${PASSWORD}
-    Click Element   ${BUTTON_SUBMIT}
+    Go To                               ${URL}
+    Wait Until Element Is Visible       ${INPUT_USER}
+    Input Text                          ${INPUT_USER}     ${USERNAME}
+    Input Text                          ${INPUT_PASS}     ${PASSWORD}
+    Click Element                       ${BUTTON_SUBMIT}
