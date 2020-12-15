@@ -12,3 +12,6 @@ Test Teardown   Close Page
 Testgram 01: Sign In Instagram
     Login.Insert Data To Sign In
     Home.Cancel Automatic Login
+    User.See Followers
+    User.Click User
+    Following.Save Highlights
