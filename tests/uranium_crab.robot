@@ -15,3 +15,4 @@ Testgram 01: Sign In Instagram
     User.See Followers
     User.Click User
     Following.Save Highlights
+    Following.Catch All Posts
