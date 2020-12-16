@@ -13,5 +13,5 @@ Open Page
 
 ### TEARDOWN
 Close Page
-    Screenshot          ariany
+    Endshot             endshot
     Close Browser
