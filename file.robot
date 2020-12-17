@@ -14,22 +14,19 @@ Screenshot
     Set Screenshot Directory        ${Path}         
     Wait Until Element Is Visible   ${HL_2}
     Capture Page Screenshot         ${filename}${DATE}.png
-    Log To Console                  ${\n}Screenshot
 
 Postshot
     [Arguments]                     ${filename}
     ${DATE}                         Get DateTime
     Set Local Variable              ${Path}         ${CURDIR}/captures/posts
     Set Screenshot Directory        ${Path}         
-    Wait Until Element Is Visible   
+    # Wait Until Element Is Visible   
     Capture Page Screenshot         ${filename}${DATE}.png
-    Log To Console                  ${\n}Postshot
 
 Endshot
     [Arguments]                     ${filename}
     ${DATE}                         Get DateTime
     Set Local Variable              ${Path}         ${CURDIR}/captures
     Set Screenshot Directory        ${Path}         
-    Wait Until Element Is Visible   ${HL_2}
+    # Wait Until Element Is Visible   ${HL_2}
     Capture Page Screenshot         ${filename}${DATE}.png
-    Log To Console                  ${\n}Screenshot
