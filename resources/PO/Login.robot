@@ -16,3 +16,4 @@ Insert Data To Sign In
     Input Text                          ${INPUT_USER}     ${USERNAME}
     Input Text                          ${INPUT_PASS}     ${PASSWORD}
     Click Element                       ${BUTTON_SUBMIT}
+    Sleep                               2
