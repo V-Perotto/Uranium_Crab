@@ -7,7 +7,7 @@ Get DateTime
     ${GETDATE}                      Get Current Date        result_format=_%d-%m-%Y_[%H;%M;%S]
     [Return]                        ${GETDATE}
 
-Screenshot
+Profileshot
     [Arguments]                     ${filename}
     ${DATE}                         Get DateTime
     Set Local Variable              ${Path}         ${CURDIR}/captures/profile
