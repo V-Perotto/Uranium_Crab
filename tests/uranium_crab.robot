@@ -14,5 +14,5 @@ Testgram 01: Sign In Instagram
     Home.Cancel Automatic Login
     User.See Followers
     User.Click User
-    Following.Save Highlights
-    Following.Catch All Posts
+    Following.Save Profile Status
+    # Following.Catch All Posts
