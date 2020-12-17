@@ -1,5 +1,5 @@
 *** Settings ***
-Resource        ../resources/PO/Following.robot
+Resource        ../resources/PO/Target.robot
 Resource        ../resources/PO/Home.robot
 Resource        ../resources/PO/Login.robot
 Resource        ../resources/PO/User.robot
@@ -14,5 +14,5 @@ Testgram 01: Sign In Instagram
     Home.Cancel Automatic Login
     User.See Followers
     User.Click User
-    Following.Save Profile Status
-    # Following.Catch All Posts
+    Target.Save Profile Status
+    # Target.Catch All Posts
