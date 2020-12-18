@@ -4,6 +4,9 @@ Resource            ../../file.robot
 *** Variables ***
 ### ELEMENTS
 ${PAGE}                     xpath=//body
+${i}                        1
+${r}                        0
+${COUNT}                    0
 # user
 ${TEXT_USER}                xpath=//h2[contains(text(), "${TARGET}")]
 # publications
@@ -19,10 +22,12 @@ ${NEXT_POST}                xpath=(//a[@class=" _65Bje  coreSpriteRightPaginatio
 ${BTN-NEXT_POST}            xpath=(//button[@class="  _6CZji   "])
 ${BANNER}                   xpath=//article[@class="M9sTE  L_LMM  JyscU Tgarh ePUX4"]
 # followers
-${NUM_FOLLOWERS}            xpath=//ul/li/a/span[@title]
+${FOLLOWERS}                xpath=//ul/li/a/span[@title]
+${FOLLOWERS-BOX}            xpath=//div[@class="_1XyCr"]
 ${LINK_FOLLOWERS}           xpath=//ul/li[@class="Y8-fY "][2]
+${LINK-COLUMN}              xpath=//div/li[${i}]/div/div[1]/div[2]/div[1]/span/a
 # followings
-${NUM_FOLLOWINGS}           xpath=//li[3]/a/span
+${FOLLOWINGS}               xpath=//li[3]/a/span
 ${LINK_FOLLOWINGS}          xpath=//ul/li[@class="Y8-fY "][3]
 # tagged
 ${TAGGED}                   xpath=//a[@class="_9VEo1 "]
@@ -49,19 +54,45 @@ ${HL_2}                     xpath=//ul[@class="vi798"]/li[@class="Ckrof"][2]/div
 
 *** Keywords ***
 User Is Visible
-    Wait Until Element Is Visible           ${TEXT_USER}
+    Wait Until Element Is Visible                   ${TEXT_USER}
+    Wait Until Element Is Visible                   ${H2_USER}
+    Sleep   1
 
 Save Profile Status
     User Is Visible
-    ${USER_INSTA}          Get Text        ${TEXT_USER}
-    Profileshot            ${USER_INSTA}
+    ${USER_INSTA}          Get Text                 ${TEXT_USER}
+    Screenshot             ${USER_INSTA}            profile
     ${POST}                Get Element Count        ${POST_LINK}
 
 Jump Page
-    FOR         ${i}          IN RANGE      3
-        Press Keys             ${PAGE}         \ue00f  # PAGE DOWN
+    FOR         ${i}       IN RANGE                 3
+        Press Keys         ${PAGE}                  \ue00f  # PAGE DOWN
     END
-    
+
+Page Down
+    Press Keys             ${PAGE}                  \ue00f  # PAGE DOWN
+
+Save Attribute
+    [Arguments]            ${ATTRIBUTE}
+    ${NUM_FOLLOWERS}       Get Text                 ${FOLLOWERS}
+    #${COUNT}               ${NUM_FOLLOWERS}/6
+    ## Verify File Existence
+    File Exists            ${TARGET}                ${ATTRIBUTE}
+    ## Go to final follow/er/ing user 
+    FOR         ${j}       IN RANGE        1        ${COUNT}+1
+        Page Down
+        Sleep              2
+    END
+    ## Write All follow/er/ing users to Excel File
+    FOR         ${i}       IN RANGE       1            ${NUM_FOLLOWERS}+1
+        Wait Until Element Is Visible     ${FOLLOWERS}
+        ${FOLLOWER-USER}                  Get Text     ${LINK-COLUMN}
+        Add Data In Excel File            ${r}         ${FOLLOWER-USER}    ${TARGET}
+        ${r}               ${r}+1
+        Sleep              2
+    END
+    Close Current Excel Document
+
 # Catch All Posts
 #     ${NUM_PUBLICATIONS}    Get Text         ${QNTD_PUBLICATIONS}
 #     Jump Page
