@@ -13,5 +13,5 @@ Open Page
 
 ### TEARDOWN
 Close Page
-    Endshot             endshot
+    Screenshot          endshot         ${EMPTY}
     Close Browser
