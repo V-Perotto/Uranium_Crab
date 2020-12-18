@@ -9,10 +9,15 @@ Test Setup      Open Page
 Test Teardown   Close Page
 
 *** Test Case ***
-Testgram 01: Sign In Instagram
+Caught Data: New Target
     Login.Insert Data To Sign In
     Home.Cancel Automatic Login
-    User.See Followers
-    User.Click User
+    User.Search Target
     Target.Save Profile Status
-    # Target.Catch All Posts
+    Target.Save Attribute           Followers
+
+# Caught Data: Saved Target
+#     Login.Insert Data To Sign In
+#     Home.Cancel Automatic Login
+#     User.Search Target
+#     Target.Save Profile Status
