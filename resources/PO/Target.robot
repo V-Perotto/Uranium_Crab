@@ -4,9 +4,10 @@ Resource            ../../file.robot
 *** Variables ***
 ### ELEMENTS
 ${PAGE}                     xpath=//body
-${i}                        1
-${r}                        0
-${COUNT}                    0
+${i}                        ${1}
+${r}                        ${0}
+${COUNT-Soldier}            ${0}
+${COUNT-Infantry}           ${0}
 # user
 ${TEXT_USER}                xpath=//h2[contains(text(), "${TARGET}")]
 # publications
@@ -54,41 +55,52 @@ ${HL_2}                     xpath=//ul[@class="vi798"]/li[@class="Ckrof"][2]/div
 
 *** Keywords ***
 User Is Visible
-    Wait Until Element Is Visible                   ${TEXT_USER}
-    Wait Until Element Is Visible                   ${H2_USER}
+    Wait Until Element Is Visible               ${TEXT_USER}
+    Wait Until Element Is Visible               ${H2_USER}
     Sleep   1
 
 Save Profile Status
     User Is Visible
-    ${USER_INSTA}          Get Text                 ${TEXT_USER}
-    Screenshot             ${USER_INSTA}            profile
-    ${POST}                Get Element Count        ${POST_LINK}
+    ${USER_INSTA}          Get Text             ${TEXT_USER}
+    Screenshot             ${USER_INSTA}        profile
+    ${POST}                Get Element Count    ${POST_LINK}
 
 Jump Page
-    FOR         ${i}       IN RANGE                 3
-        Press Keys         ${PAGE}                  \ue00f  # PAGE DOWN
+    FOR         ${i}       IN RANGE             3
+        Press Keys         ${PAGE}              \ue00f  # PAGE DOWN
     END
 
 Page Down
-    Press Keys             ${PAGE}                  \ue00f  # PAGE DOWN
+    Press Keys             ${PAGE}              \ue00f  # PAGE DOWN
 
 Save Attribute
     [Arguments]            ${ATTRIBUTE}
-    ${NUM_FOLLOWERS}       Get Text                 ${FOLLOWERS}
-    #${COUNT}               ${NUM_FOLLOWERS}/6
+    # Followers conversion
+    ${NUM_FOLLOWERS}       Get Text             ${FOLLOWERS}
+    ${NUM_FOLLOWERS}       Remove String        ${NUM_FOLLOWERS}        .
+    # Followings conversion
+    ${NUM_FOLLOWINGS}      Get Text             ${FOLLOWINGS}
+    ${NUM_FOLLOWINGS}      Remove String        ${NUM_FOLLOWINGS}       .
+    # Transforming to Integer for Page Down uses
+    ${COUNT-Soldier}=      Evaluate             ${NUM_FOLLOWERS}/6
+    ${COUNT-Infantry}=     Evaluate             ${NUM_FOLLOWINGS}/6
+    ${COUNT-Soldier}       Convert To Number    ${COUNT-Soldier}        0
+    ${COUNT-Infantry}      Convert To Number    ${COUNT-Infantry}       0
+    ${COUNT-Soldier}       Convert To Integer   ${COUNT-Soldier}
+    ${COUNT-Infantry}      Convert To Integer   ${COUNT-Infantry}
     ## Verify File Existence
-    File Exists            ${TARGET}                ${ATTRIBUTE}
+    File Exists            ${TARGET}            ${ATTRIBUTE}
     ## Go to final follow/er/ing user 
-    FOR         ${j}       IN RANGE        1        ${COUNT}+1
+    FOR         ${j}       IN RANGE             1        ${COUNT+1}
         Page Down
         Sleep              2
     END
     ## Write All follow/er/ing users to Excel File
-    FOR         ${i}       IN RANGE       1            ${NUM_FOLLOWERS}+1
-        Wait Until Element Is Visible     ${FOLLOWERS}
-        ${FOLLOWER-USER}                  Get Text     ${LINK-COLUMN}
-        Add Data In Excel File            ${r}         ${FOLLOWER-USER}    ${TARGET}
-        ${r}               ${r}+1
+    FOR         ${i}       IN RANGE             1            ${NUM_FOLLOWERS+1}
+        Wait Until Element Is Visible           ${FOLLOWERS}
+        ${FOLLOWER-USER}                        Get Text     ${LINK-COLUMN}
+        Add Data In Excel File                  ${r}         ${FOLLOWER-USER}    ${TARGET}
+        ${r}=              Evaluate             ${r} + 1
         Sleep              2
     END
     Close Current Excel Document
@@ -96,7 +108,7 @@ Save Attribute
 # Catch All Posts
 #     ${NUM_PUBLICATIONS}    Get Text         ${QNTD_PUBLICATIONS}
 #     Jump Page
-#     FOR      ${i}          IN RANGE         1         ${NUM_PUBLICATIONS}+1
+#     FOR      ${i}          IN RANGE         1         ${NUM_PUBLICATIONS+1}
 #         Wait Until Element Is Visible       ${BANNER}
 #         Sleep                               1
 #         Postshot                            post${i}
