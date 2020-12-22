@@ -8,6 +8,8 @@ ${i}                        ${1}
 ${r}                        ${0}
 ${COUNT-Soldier}            ${0}
 ${COUNT-Infantry}           ${0}
+${SOLDIER}                  Followers
+${INFANTRY}                 Followings
 # user
 ${TEXT_USER}                xpath=//h2[contains(text(), "${TARGET}")]
 # publications
@@ -26,7 +28,9 @@ ${BANNER}                   xpath=//article[@class="M9sTE  L_LMM  JyscU Tgarh eP
 ${FOLLOWERS}                xpath=//ul/li/a/span[@title]
 ${FOLLOWERS-BOX}            xpath=//div[@class="_1XyCr"]
 ${LINK_FOLLOWERS}           xpath=//ul/li[@class="Y8-fY "][2]
-${LINK-COLUMN}              xpath=//div/li[${i}]/div/div[1]/div[2]/div[1]/span/a
+${LINK-COLUMN}              xpath=//ul/div/li[${i}]/div/div[2]/div[1]/div/div/span/a
+${COLUMN-BODY}              xpath=//div[@class="isgrP"]
+${CLOSE_BTN}                xpath=//div[1]/div/div[2]/button[@class="wpO6b "]
 # followings
 ${FOLLOWINGS}               xpath=//li[3]/a/span
 ${LINK_FOLLOWINGS}          xpath=//ul/li[@class="Y8-fY "][3]
@@ -59,51 +63,80 @@ User Is Visible
     Wait Until Element Is Visible               ${H2_USER}
     Sleep   1
 
+Jump Page
+    FOR         ${i}       IN RANGE             3
+        Press Keys         ${PAGE}              \ue00f  # PAGE DOWN
+    END
+
+# Scroll Page To Location
+#     [Arguments]    ${x_location}    ${y_location}
+#     Execute JavaScript    window.scrollTo(${x_location}, ${y_location})
+
+Page Down
+    Press Keys             ${COLUMN-BODY}       \ue00f  # PAGE DOWN    
+
+# Count
+Count Army
+    [Arguments]            ${COUNT.attribute}
+    FOR         ${j}       IN RANGE             1                ${COUNT.attribute} + 1
+        Page Down    
+        Sleep              2
+    END
+
+Get Army
+    [Arguments]            ${attribute}         ${num_attribute}      ${army}
+    FOR         ${i}       IN RANGE             1                ${num_attribute} + 1
+        Wait Until Element Is Visible           ${role}
+        ${role-user}       Get Text             ${LINK-COLUMN}
+        Add Data In Excel File                  ${target}        ${attribute}    ${role-user}
+        ${r}=              Evaluate             ${r} + 1
+        Sleep              1
+    END
+
 Save Profile Status
     User Is Visible
     ${USER_INSTA}          Get Text             ${TEXT_USER}
     Screenshot             ${USER_INSTA}        profile
     ${POST}                Get Element Count    ${POST_LINK}
 
-Jump Page
-    FOR         ${i}       IN RANGE             3
-        Press Keys         ${PAGE}              \ue00f  # PAGE DOWN
-    END
-
-Page Down
-    Press Keys             ${PAGE}              \ue00f  # PAGE DOWN
-
-Save Attribute
-    [Arguments]            ${ATTRIBUTE}
+Capture Followers
+    [Arguments]            ${SOLDIER.army}      ${ATTRIBUTE.soldier}
     # Followers conversion
-    ${NUM_FOLLOWERS}       Get Text             ${FOLLOWERS}
+    ${NUM_FOLLOWERS}       Get Text             ${SOLDIER.army}
     ${NUM_FOLLOWERS}       Remove String        ${NUM_FOLLOWERS}        .
+    # Transforming to Integer for Page Down uses
+    ${COUNT-Soldier}=      Evaluate             ${NUM_FOLLOWERS} / 6
+    ${COUNT-Soldier}       Convert To Number    ${COUNT-Soldier}        0
+    ${COUNT-Soldier}       Convert To Integer   ${COUNT-Soldier}
+    Click Element          ${SOLDIER.army}
+    Wait Until Element Is Visible               ${LINK-COLUMN}
+    Wait Until Element Is Visible               ${COLUMN-BODY}
+    Click Element          ${COLUMN-BODY}
+    Count Army             ${COUNT-Soldier}
+    Log                    ${COUNT-Soldier}
+    Get Army               ${COUNT-Soldier}     ${NUM_FOLLOWERS}    ${SOLDIERS}
+    Click Element          ${CLOSE_BTN}
+
+Capture Followings
+    [Arguments]            ${INFANTRY.army}     ${ATTRIBUTE.infantry}
     # Followings conversion
-    ${NUM_FOLLOWINGS}      Get Text             ${FOLLOWINGS}
+    ${NUM_FOLLOWINGS}      Get Text             ${INFANTRY.army}
     ${NUM_FOLLOWINGS}      Remove String        ${NUM_FOLLOWINGS}       .
     # Transforming to Integer for Page Down uses
-    ${COUNT-Soldier}=      Evaluate             ${NUM_FOLLOWERS}/6
-    ${COUNT-Infantry}=     Evaluate             ${NUM_FOLLOWINGS}/6
-    ${COUNT-Soldier}       Convert To Number    ${COUNT-Soldier}        0
+    ${COUNT-Infantry}=     Evaluate             ${NUM_FOLLOWINGS} / 6
     ${COUNT-Infantry}      Convert To Number    ${COUNT-Infantry}       0
-    ${COUNT-Soldier}       Convert To Integer   ${COUNT-Soldier}
     ${COUNT-Infantry}      Convert To Integer   ${COUNT-Infantry}
-    ## Verify File Existence
-    File Exists            ${TARGET}            ${ATTRIBUTE}
-    ## Go to final follow/er/ing user 
-    FOR         ${j}       IN RANGE             1        ${COUNT+1}
-        Page Down
-        Sleep              2
-    END
-    ## Write All follow/er/ing users to Excel File
-    FOR         ${i}       IN RANGE             1            ${NUM_FOLLOWERS+1}
-        Wait Until Element Is Visible           ${FOLLOWERS}
-        ${FOLLOWER-USER}                        Get Text     ${LINK-COLUMN}
-        Add Data In Excel File                  ${r}         ${FOLLOWER-USER}    ${TARGET}
-        ${r}=              Evaluate             ${r} + 1
-        Sleep              2
-    END
-    Close Current Excel Document
+    Click Element          ${INFANTRY.army}
+    Wait Until Element Is Visible               ${LINK-COLUMN}
+    Click Element          ${COLUMN-BODY}
+    Count Army             ${COUNT-Infantry}
+    Get Army               ${INFANTRY.army}     ${NUM_FOLLOWINGS}    ${TARGET}
+    Click Element          ${CLOSE_BTN}       
+
+Save Attribute
+    Capture Followers      ${FOLLOWERS}         ${SOLDIER}
+    # Capture Followings     ${FOLLOWINGS}        ${INFANTRY}
+    File Exists            ${TARGET}            ${ATTRIBUTE.soldier}    # Write All follow/er/ing users to Excel File. This time is to get followers only
 
 # Catch All Posts
 #     ${NUM_PUBLICATIONS}    Get Text         ${QNTD_PUBLICATIONS}
