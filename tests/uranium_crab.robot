@@ -14,7 +14,7 @@ Caught Data: New Target
     Home.Cancel Automatic Login
     User.Search Target
     Target.Save Profile Status
-    Target.Save Attribute           Followers
+    Target.Save Attribute
 
 # Caught Data: Saved Target
 #     Login.Insert Data To Sign In
