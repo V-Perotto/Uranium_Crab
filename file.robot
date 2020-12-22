@@ -5,6 +5,13 @@ Library        ExcelLibrary
 Library        OperatingSystem
 Library        String
 
+### DOCUMENTATION ###
+# Verificar Library Excel, provavelmente não será usada
+# Library OperatingSystem será usada no lugar da ExcelLibrary
+
+*** Variable ***
+${j}    ${0}
+
 *** Keywords ***
 Get DateTime
     ${GETDATE}                              Get Current Date        result_format=_%d-%m-%Y_[%H;%M;%S]
@@ -13,9 +20,9 @@ Get DateTime
 ### EXCEL FILES
 File Exists
     [Arguments]                             ${TARGET.name}           ${TARGET.attribute}
-    Append To File                          path=${CURDIR}/data/     content=${TARGET.name}-${TARGET.attribute}.xlsx     encoding=UTF-8
-    File Should Exist                       path=${CURDIR}/data/${TARGET.name}-${TARGET.attribute}.xlsx
-    Open Excel File                         ${TARGET}                ${ATTRIBUTE}
+    Create File                             ${CURDIR}/data/${TARGET.name}-${TARGET.attribute}.xlsx     ${EMPTY}     UTF-8
+    File Should Exist                       ${CURDIR}/data/${TARGET.name}-${TARGET.attribute}.xlsx
+    Open Excel File                         ${TARGET.name}                ${TARGET.attribute}
     Wait Until Element Is Visible           ${FOLLOWERS-BOX}
 
 # Create Excel to Save Attribute
@@ -25,11 +32,11 @@ File Exists
 
 Open Excel File
     [Arguments]                             ${TARGET.name}          ${TARGET.attribute}
-    Open Excel Document                     filename=${CURDIR}/data/${TARGET.name}-${TARGET.attribute}.xlsx         doc_id=${TARGET.attribute}
+    Get File                                ${CURDIR}/data/${TARGET.name}-${TARGET.attribute}.xlsx     UTF-8    strict
 
 Add Data In Excel File
-    [Arguments]                             ${ROW.number}           ${FOLLOW.user}                           ${TARGET.attribute}
-    Write Excel Row                         row_num=${ROW.number}   row_data=${FOLLOW.user}  col_offset=0    sheet_name=${TARGET.attribute}
+    [Arguments]                             ${TARGET.name}          ${TARGET.attribute}         ${FOLLOW.user}
+    Append To File                          ${CURDIR}/data/${TARGET.name}-${TARGET.attribute}.xlsx      content=${FOLLOW.user}${\n}     UTF-8
 
 ### SCREENSHOTS FILES
 Screenshot
